@@ -25,11 +25,12 @@
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
         </span>
+        <span class="text-gray-800 text-base md:text-sm">Calendar</span>
         <date-picker
           v-model="internalRange"
           type="daterange"
-          range-separator="-"
-          format="D MMMM YYYY"
+          range-separator=" - "
+          format="d MMMM yyyy"
           value-type="format"
           :editable="false"
           :clearable="false"
@@ -54,8 +55,13 @@ export default {
   },
   data() {
     const today = new Date();
-    const start = new Date(today.getFullYear(), today.getMonth(), 3);
-    const end = new Date(today.getFullYear(), today.getMonth(), 17);
+    const end = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const start = new Date(end);
+    start.setDate(start.getDate() - 13); // show last 14 days
     const format = new Intl.DateTimeFormat("en-GB", {
       day: "numeric",
       month: "long",
@@ -84,3 +90,15 @@ export default {
 </script>
 
 <style scoped></style>
+<style scoped>
+/* Hide the built-in calendar icon inside vue2-datepicker to avoid duplicate icon */
+/* deep selector for Vue 2 (vue-loader v15) */
+/deep/ .mx-datepicker .mx-input-wrapper .mx-icon-calendar {
+  display: none;
+}
+/* Remove extra input padding reserved for the removed icon */
+/deep/ .mx-datepicker .mx-input {
+  padding-left: 0;
+  padding-right: 0;
+}
+</style>
