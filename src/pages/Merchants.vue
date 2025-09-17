@@ -1,15 +1,6 @@
 <template>
   <div class="space-y-6">
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-semibold">Merchants</h2>
-      <div
-        class="hidden md:flex items-center text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded-lg"
-      >
-        <span class="mr-2">📅</span>
-        <span>3 September 2025 - 17 September 2025</span>
-        <span class="ml-2">▾</span>
-      </div>
-    </div>
+    <!-- Page header is provided globally by PageHeader.vue -->
 
     <div class="bg-white rounded-lg border border-gray-200 p-4">
       <div class="flex flex-wrap gap-3 items-center mb-4">

@@ -1,16 +1,6 @@
 <template>
   <div class="space-y-6">
-    <!-- Header with Date Range -->
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-semibold text-gray-900">Orders</h1>
-      <div
-        class="flex items-center text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded-lg"
-      >
-        <span class="mr-2">📅</span>
-        <span>18 August 2025 - 17 September 2025</span>
-        <span class="ml-2">▾</span>
-      </div>
-    </div>
+    <!-- Page header is provided globally by PageHeader.vue -->
 
     <!-- Filters and Search -->
     <div class="bg-white rounded-lg border border-gray-200 p-4">

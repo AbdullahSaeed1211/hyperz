@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
-    <!-- Hero two-column layout -->
-    <div class="rounded-2xl overflow-hidden bg-black text-white">
+    <!-- Hero two-column layout (hidden on mobile) -->
+    <div class="hidden md:block rounded-2xl overflow-hidden bg-black text-white">
       <div class="flex items-stretch">
         <div class="w-1/3 p-10 flex justify-center items-center">
           <div>

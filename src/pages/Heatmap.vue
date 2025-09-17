@@ -1,9 +1,5 @@
 <template>
   <div class="h-[75vh] md:h-[78vh] lg:h-[80vh]">
-    <div class="mb-3 flex items-center justify-between">
-      <h2 class="text-xl font-semibold">Orders Heatmap</h2>
-      <span class="text-sm text-gray-500">Lucknow, India</span>
-    </div>
     <!-- Heatmap Controls -->
     <div
       class="mb-4 bg-white rounded-lg shadow-sm border border-gray-200 p-4 heatmap-controls"
@@ -12,162 +8,241 @@
         <span class="text-xl mr-2">🎛️</span>
         Map Controls
       </h3>
+      <div class="md:grid md:grid-cols-2 md:gap-6">
+        <!-- LEFT: Controls -->
+        <div>
+          <!-- Layer Controls -->
+          <div class="mb-4">
+            <h4
+              class="text-sm font-medium text-gray-700 mb-2 flex items-center"
+            >
+              <span class="text-sm mr-1">🗂️</span>
+              Layers
+            </h4>
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  v-model="showHeat"
+                  class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span
+                  class="text-sm group-hover:text-blue-600 transition-colors"
+                >
+                  Heat Layer
+                </span>
+                <div class="tooltip-container relative">
+                  <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                  <div
+                    class="tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10"
+                  >
+                    Shows order density as colored heat zones
+                  </div>
+                </div>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  v-model="showMarkers"
+                  class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span
+                  class="text-sm group-hover:text-blue-600 transition-colors"
+                >
+                  Markers
+                </span>
+                <div class="tooltip-container relative">
+                  <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                  <div
+                    class="tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10"
+                  >
+                    Individual order location pins
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
 
-      <!-- Layer Controls -->
-      <div class="mb-4">
-        <h4 class="text-sm font-medium text-gray-700 mb-2 flex items-center">
-          <span class="text-sm mr-1">🗂️</span>
-          Layers
-        </h4>
-        <div class="flex gap-4">
-          <label class="flex items-center gap-2 cursor-pointer group">
-            <input
-              type="checkbox"
-              v-model="showHeat"
-              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            <span class="text-sm group-hover:text-blue-600 transition-colors">
-              Heat Layer
-            </span>
-            <div class="tooltip-container relative">
-              <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
-              <div
-                class="tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10"
-              >
-                Shows order density as colored heat zones
+          <!-- Heatmap Settings -->
+          <div class="mb-4">
+            <h4
+              class="text-sm font-medium text-gray-700 mb-3 flex items-center"
+            >
+              <span class="text-sm mr-1">⚙️</span>
+              Heatmap Settings
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Radius Control -->
+              <div class="space-y-2">
+                <label
+                  class="flex items-center justify-between text-sm text-gray-600"
+                >
+                  <span class="flex items-center gap-1">
+                    <span>📏</span>
+                    Radius
+                  </span>
+                  <div class="tooltip-container relative">
+                    <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                    <div
+                      class="tooltip absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 max-w-xs"
+                    >
+                      Controls the size of heat zones around each order
+                    </div>
+                  </div>
+                </label>
+                <input
+                  type="range"
+                  min="10"
+                  max="120"
+                  v-model.number="radius"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
+                />
+                <div class="text-xs text-gray-500 text-center">
+                  {{ radius }}px
+                </div>
+              </div>
+
+              <!-- Blur Control -->
+              <div class="space-y-2">
+                <label
+                  class="flex items-center justify-between text-sm text-gray-600"
+                >
+                  <span class="flex items-center gap-1">
+                    <span>🌫️</span>
+                    Blur
+                  </span>
+                  <div class="tooltip-container relative">
+                    <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                    <div
+                      class="tooltip absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 max-w-xs"
+                    >
+                      Controls the softness/fading of heat zones
+                    </div>
+                  </div>
+                </label>
+                <input
+                  type="range"
+                  min="10"
+                  max="40"
+                  v-model.number="blur"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
+                />
+                <div class="text-xs text-gray-500 text-center">
+                  {{ blur }}px
+                </div>
+              </div>
+
+              <!-- Intensity Control -->
+              <div class="space-y-2">
+                <label
+                  class="flex items-center justify-between text-sm text-gray-600"
+                >
+                  <span class="flex items-center gap-1">
+                    <span>🔥</span>
+                    Intensity
+                  </span>
+                  <div class="tooltip-container relative">
+                    <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                    <div
+                      class="tooltip absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 max-w-xs"
+                    >
+                      Controls the strength/brightness of heat zones
+                    </div>
+                  </div>
+                </label>
+                <input
+                  type="range"
+                  min="0.2"
+                  max="2"
+                  step="0.05"
+                  v-model.number="weightScale"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
+                />
+                <div class="text-xs text-gray-500 text-center">
+                  {{ weightScale.toFixed(2) }}
+                </div>
               </div>
             </div>
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer group">
-            <input
-              type="checkbox"
-              v-model="showMarkers"
-              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            <span class="text-sm group-hover:text-blue-600 transition-colors">
-              Markers
-            </span>
-            <div class="tooltip-container relative">
-              <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
-              <div
-                class="tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10"
-              >
-                Individual order location pins
-              </div>
+          </div>
+
+          <!-- Actions -->
+          <div
+            class="flex justify-between items-center pt-2 border-t border-gray-100"
+          >
+            <button
+              class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2 shadow-sm"
+              @click="fitToOrders"
+            >
+              <span>🎯</span>
+              Fit to Orders
+            </button>
+            <div class="text-xs text-gray-500">
+              {{ orders.length }} orders displayed
             </div>
-          </label>
+          </div>
         </div>
-      </div>
 
-      <!-- Heatmap Settings -->
-      <div class="mb-4">
-        <h4 class="text-sm font-medium text-gray-700 mb-3 flex items-center">
-          <span class="text-sm mr-1">⚙️</span>
-          Heatmap Settings
-        </h4>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Radius Control -->
-          <div class="space-y-2">
-            <label
-              class="flex items-center justify-between text-sm text-gray-600"
-            >
-              <span class="flex items-center gap-1">
-                <span>📏</span>
-                Radius
-              </span>
-              <div class="tooltip-container relative">
-                <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+        <!-- RIGHT: Legend -->
+        <div class="mt-6 md:mt-0">
+          <h4 class="text-sm font-medium text-gray-800 mb-3 flex items-center">
+            <span class="text-sm mr-2">📊</span>
+            Heatmap Legend
+          </h4>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs text-gray-600 font-medium">Order Density</span>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500">Low</span>
+              <div class="flex">
                 <div
-                  class="tooltip absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 max-w-xs"
-                >
-                  Controls the size of heat zones around each order
-                </div>
-              </div>
-            </label>
-            <input
-              type="range"
-              min="10"
-              max="120"
-              v-model.number="radius"
-              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
-            />
-            <div class="text-xs text-gray-500 text-center">{{ radius }}px</div>
-          </div>
-
-          <!-- Blur Control -->
-          <div class="space-y-2">
-            <label
-              class="flex items-center justify-between text-sm text-gray-600"
-            >
-              <span class="flex items-center gap-1">
-                <span>🌫️</span>
-                Blur
-              </span>
-              <div class="tooltip-container relative">
-                <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                  class="w-3 h-6 bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 rounded-l"
+                ></div>
                 <div
-                  class="tooltip absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 max-w-xs"
-                >
-                  Controls the softness/fading of heat zones
-                </div>
+                  class="w-3 h-6 bg-gradient-to-r from-yellow-400 to-red-500 rounded-r"
+                ></div>
               </div>
-            </label>
-            <input
-              type="range"
-              min="10"
-              max="40"
-              v-model.number="blur"
-              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
-            />
-            <div class="text-xs text-gray-500 text-center">{{ blur }}px</div>
-          </div>
-
-          <!-- Intensity Control -->
-          <div class="space-y-2">
-            <label
-              class="flex items-center justify-between text-sm text-gray-600"
-            >
-              <span class="flex items-center gap-1">
-                <span>🔥</span>
-                Intensity
-              </span>
-              <div class="tooltip-container relative">
-                <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
-                <div
-                  class="tooltip absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 max-w-xs"
-                >
-                  Controls the strength/brightness of heat zones
-                </div>
-              </div>
-            </label>
-            <input
-              type="range"
-              min="0.2"
-              max="2"
-              step="0.05"
-              v-model.number="weightScale"
-              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
-            />
-            <div class="text-xs text-gray-500 text-center">
-              {{ weightScale.toFixed(2) }}
+              <span class="text-xs text-gray-500">High</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Actions -->
-      <div
-        class="flex justify-between items-center pt-2 border-t border-gray-100"
-      >
-        <button
-          class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2 shadow-sm"
-          @click="fitToOrders"
-        >
-          <span>🎯</span>
-          Fit to Orders
-        </button>
-        <div class="text-xs text-gray-500">
-          {{ orders.length }} orders displayed
+          <div class="grid grid-cols-2 md:grid-cols-2 gap-2 text-xs">
+            <div class="flex items-center gap-1">
+              <div class="w-3 h-3 bg-blue-500 rounded"></div>
+              <span class="text-gray-600">Low Activity</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <div class="w-3 h-3 bg-green-500 rounded"></div>
+              <span class="text-gray-600">Medium Activity</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <div class="w-3 h-3 bg-yellow-500 rounded"></div>
+              <span class="text-gray-600">High Activity</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <div class="w-3 h-3 bg-red-500 rounded"></div>
+              <span class="text-gray-600">Peak Activity</span>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-gray-100">
+            <div class="flex items-center gap-4 text-xs">
+              <div class="flex items-center gap-1">
+                <div
+                  class="w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-sm"
+                ></div>
+                <span class="text-gray-600">Order Location</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <div
+                  class="w-4 h-4 bg-green-600 rounded-full border-2 border-white shadow-sm"
+                ></div>
+                <span class="text-gray-600">High-Value Order</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <div
+                  class="w-4 h-4 bg-purple-600 rounded-full border-2 border-white shadow-sm"
+                ></div>
+                <span class="text-gray-600">Premium Order</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

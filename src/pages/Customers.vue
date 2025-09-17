@@ -1,7 +1,5 @@
 <template>
   <div class="space-y-6">
-    <h2 class="text-2xl font-semibold">Customers</h2>
-
     <div class="bg-white rounded-lg border border-gray-200 p-4">
       <div class="flex flex-wrap gap-3 items-center mb-4">
         <input

@@ -1,7 +1,5 @@
 <template>
   <div class="space-y-6">
-    <h2 class="text-2xl font-semibold">Settings</h2>
-
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="bg-white rounded-lg border border-gray-200 p-6">
         <h3 class="text-lg font-semibold mb-4">General</h3>
