@@ -4,21 +4,13 @@
     <div
       class="mb-4 bg-white rounded-lg shadow-sm border border-gray-200 p-4 heatmap-controls"
     >
-      <h3 class="text-lg font-semibold mb-3 text-gray-800 flex items-center">
-        <span class="text-xl mr-2">🎛️</span>
-        Map Controls
-      </h3>
+      <h3 class="text-lg font-semibold mb-3 text-gray-900">Map Controls</h3>
       <div class="md:grid md:grid-cols-2 md:gap-6">
         <!-- LEFT: Controls -->
         <div>
           <!-- Layer Controls -->
           <div class="mb-4">
-            <h4
-              class="text-sm font-medium text-gray-700 mb-2 flex items-center"
-            >
-              <span class="text-sm mr-1">🗂️</span>
-              Layers
-            </h4>
+            <h4 class="text-sm font-medium text-gray-700 mb-2">Layers</h4>
             <div class="flex gap-4">
               <label class="flex items-center gap-2 cursor-pointer group">
                 <input
@@ -32,7 +24,7 @@
                   Heat Layer
                 </span>
                 <div class="tooltip-container relative">
-                  <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                  <span class="info-icon cursor-help">i</span>
                   <div
                     class="tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10"
                   >
@@ -52,7 +44,7 @@
                   Markers
                 </span>
                 <div class="tooltip-container relative">
-                  <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                  <span class="info-icon cursor-help">i</span>
                   <div
                     class="tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10"
                   >
@@ -65,10 +57,7 @@
 
           <!-- Heatmap Settings -->
           <div class="mb-4">
-            <h4
-              class="text-sm font-medium text-gray-700 mb-3 flex items-center"
-            >
-              <span class="text-sm mr-1">⚙️</span>
+            <h4 class="text-sm font-medium text-gray-700 mb-3">
               Heatmap Settings
             </h4>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -77,12 +66,9 @@
                 <label
                   class="flex items-center justify-between text-sm text-gray-600"
                 >
-                  <span class="flex items-center gap-1">
-                    <span>📏</span>
-                    Radius
-                  </span>
+                  <span class="flex items-center gap-1">Radius</span>
                   <div class="tooltip-container relative">
-                    <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                    <span class="info-icon cursor-help">i</span>
                     <div
                       class="tooltip absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 max-w-xs"
                     >
@@ -107,12 +93,9 @@
                 <label
                   class="flex items-center justify-between text-sm text-gray-600"
                 >
-                  <span class="flex items-center gap-1">
-                    <span>🌫️</span>
-                    Blur
-                  </span>
+                  <span class="flex items-center gap-1">Blur</span>
                   <div class="tooltip-container relative">
-                    <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                    <span class="info-icon cursor-help">i</span>
                     <div
                       class="tooltip absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 max-w-xs"
                     >
@@ -137,12 +120,9 @@
                 <label
                   class="flex items-center justify-between text-sm text-gray-600"
                 >
-                  <span class="flex items-center gap-1">
-                    <span>🔥</span>
-                    Intensity
-                  </span>
+                  <span class="flex items-center gap-1">Intensity</span>
                   <div class="tooltip-container relative">
-                    <span class="text-xs text-gray-400 cursor-help">ℹ️</span>
+                    <span class="info-icon cursor-help">i</span>
                     <div
                       class="tooltip absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 max-w-xs"
                     >
@@ -170,10 +150,9 @@
             class="flex justify-between items-center pt-2 border-t border-gray-100"
           >
             <button
-              class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2 shadow-sm"
+              class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm"
               @click="fitToOrders"
             >
-              <span>🎯</span>
               Fit to Orders
             </button>
             <div class="text-xs text-gray-500">
@@ -184,10 +163,7 @@
 
         <!-- RIGHT: Legend -->
         <div class="mt-6 md:mt-0">
-          <h4 class="text-sm font-medium text-gray-800 mb-3 flex items-center">
-            <span class="text-sm mr-2">📊</span>
-            Heatmap Legend
-          </h4>
+          <h4 class="text-sm font-medium text-gray-800 mb-3">Heatmap Legend</h4>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs text-gray-600 font-medium">Order Density</span>
             <div class="flex items-center gap-2">
@@ -305,10 +281,7 @@
 
     <!-- Enhanced Legend -->
     <div class="mt-4 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-      <h4 class="text-sm font-medium text-gray-800 mb-3 flex items-center">
-        <span class="text-sm mr-2">📊</span>
-        Heatmap Legend
-      </h4>
+      <h4 class="text-sm font-medium text-gray-800 mb-3">Heatmap Legend</h4>
 
       <!-- Color Scale Legend -->
       <div class="flex items-center justify-between mb-2">
@@ -600,6 +573,20 @@ export default {
 .tooltip-container:hover .tooltip {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* Minimal info icon matching app aesthetic */
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  font-size: 10px;
+  line-height: 1;
+  background-color: #e5e7eb; /* gray-200 */
+  color: #374151; /* gray-700 */
 }
 
 /* Custom slider styling */
