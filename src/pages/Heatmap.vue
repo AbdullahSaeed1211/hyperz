@@ -79,7 +79,7 @@
                 <input
                   type="range"
                   min="10"
-                  max="120"
+                  max="101"
                   v-model.number="radius"
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
                 />
@@ -559,7 +559,7 @@ export default {
         // Scale the radius with zoom to keep heat visible when zooming out/in
         const scaled = Math.max(
           10,
-          Math.min(120, Math.round(this.baseRadius * (z / 12)))
+          Math.min(101, Math.round(this.baseRadius * (z / 12)))
         );
         this.radius = scaled;
       });
