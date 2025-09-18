@@ -7,6 +7,7 @@ export default {
   props: {
     points: { type: Array, required: true }, // [lat,lng,value]
     radius: { type: Number, default: 35 },
+    blur: { type: Number, default: 20 },
     intensity: { type: Number, default: 1 },
     gradient: { type: Object, default: () => ({}) },
   },
@@ -17,7 +18,9 @@ export default {
       return p && p.mapObject ? p.mapObject : null;
     };
     const blur = Math.max(
-      Math.round(this.radius * HEATMAP_DEFAULTS.blurFactor),
+      Math.round(
+        Math.max(this.blur, this.radius * HEATMAP_DEFAULTS.blurFactor)
+      ),
       10
     );
     this.layer = L.heatLayer(this.points, {
@@ -47,6 +50,16 @@ export default {
     radius(next) {
       if (this.layer && this.layer._map)
         this.layer.setOptions({ radius: next });
+    },
+    blur(next) {
+      if (this.layer && this.layer._map) {
+        const b = Math.max(
+          Math.round(Math.max(next, this.radius * HEATMAP_DEFAULTS.blurFactor)),
+          10
+        );
+        this.layer.setOptions({ blur: b });
+        this.layer.redraw();
+      }
     },
     gradient(next) {
       if (this.layer && this.layer._map)

@@ -3,6 +3,7 @@
     :is="componentName"
     :points="points"
     :radius="radius"
+    :blur="blur"
     :intensity="intensity"
     :gradient="gradient"
     @ready="$emit('ready')"
@@ -22,6 +23,7 @@ export default {
     mode: { type: String, default: "auto" }, // auto | canvas | webgl
     points: { type: Array, required: true },
     radius: { type: Number, default: 35 },
+    blur: { type: Number, default: 20 },
     intensity: { type: Number, default: 1 },
     gradient: { type: Object, default: () => ({}) },
   },

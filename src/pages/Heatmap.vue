@@ -293,6 +293,7 @@
         :mode="renderMode"
         :points="heatPoints"
         :radius="radius"
+        :blur="blur"
         :intensity="clampedIntensity"
         :gradient="gradient"
         @ready="() => {}"
@@ -440,7 +441,7 @@ export default {
       baseRadius: 35,
       blur: 32,
       weightScale: 0.8,
-      renderMode: "auto", // auto | canvas | webgl
+      renderMode: "canvas", // default to Canvas for stability; user can switch
       gradient: {
         0.0: "#2563eb",
         0.35: "#22c55e",
