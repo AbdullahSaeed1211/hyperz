@@ -79,7 +79,7 @@
                 <input
                   type="range"
                   min="10"
-                  max="101"
+                  max="200"
                   v-model.number="radius"
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
                 />
@@ -231,12 +231,21 @@
     >
       <l-tile-layer :url="tileUrl" :attribution="attribution" />
       <l-tile-layer :url="labelsUrl" :opacity="0.9" />
+      <!-- Canvas Heatmap (leaflet.heat) -->
       <l-heatmap
-        v-if="showHeat"
+        v-if="showHeat && !useWebgl"
         :lat-lngs="heatLatLngs"
         :radius="radius"
         :gradient="gradient"
         :blur="blur"
+      />
+      <!-- WebGL Heatmap for large radii -->
+      <l-webgl-heatmap
+        v-if="showHeat && useWebgl"
+        :lat-lngs="heatLatLngs"
+        :radius="radius"
+        :gradient="gradient"
+        :intensity="weightScale"
       />
       <template v-if="showMarkers">
         <l-marker
@@ -351,11 +360,12 @@
 import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet.heat";
+import "leaflet-webgl-heatmap";
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
-// Lightweight wrapper to expose heat layer as a component
+// Lightweight wrapper to expose canvas heat layer as a component
 const LHeatmap = {
   name: "LHeatmap",
   props: {
@@ -448,11 +458,66 @@ const LHeatmap = {
   },
 };
 
+// WebGL heatmap wrapper using leaflet-webgl-heatmap
+const LWebglHeatmap = {
+  name: "LWebglHeatmap",
+  props: {
+    latLngs: { type: Array, required: true },
+    radius: { type: Number, default: 50 },
+    intensity: { type: Number, default: 1 },
+    gradient: { type: Object, default: () => ({}) },
+  },
+  mounted() {
+    const layer = (this.layer = L.webGLHeatmap({
+      size: this.radius,
+      alphaRange: 0.8,
+    }));
+    const map = this.$parent && this.$parent.mapObject;
+    if (map) {
+      map.addLayer(layer);
+      this._applyData();
+    }
+  },
+  watch: {
+    latLngs() {
+      this._applyData();
+    },
+    radius(next) {
+      if (this.layer) {
+        this.layer.setOptions({ size: next });
+      }
+    },
+    intensity() {
+      this._applyData();
+    },
+  },
+  methods: {
+    _applyData() {
+      if (!this.layer) return;
+      const points = this.latLngs.map((p) => ({
+        lat: p[0],
+        lon: p[1],
+        value: p[2] || this.intensity,
+      }));
+      this.layer.setData(points);
+      this.layer.update();
+    },
+  },
+  beforeDestroy() {
+    if (this.layer && this.$parent && this.$parent.mapObject) {
+      this.$parent.mapObject.removeLayer(this.layer);
+    }
+  },
+  render(h) {
+    return h();
+  },
+};
+
 import orderService from "@/services/orderService";
 
 export default {
   name: "HeatmapPage",
-  components: { LMap, LTileLayer, LMarker, LPopup, LHeatmap },
+  components: { LMap, LTileLayer, LMarker, LPopup, LHeatmap, LWebglHeatmap },
   data() {
     return {
       orders: [],
@@ -479,6 +544,9 @@ export default {
     };
   },
   computed: {
+    useWebgl() {
+      return this.radius >= 95;
+    },
     heatLatLngs() {
       const w = this.weightScale;
       return this.orders.map((o) => [...o.location_lat_lon, w]);
@@ -559,7 +627,7 @@ export default {
         // Scale the radius with zoom to keep heat visible when zooming out/in
         const scaled = Math.max(
           10,
-          Math.min(101, Math.round(this.baseRadius * (z / 12)))
+          Math.min(200, Math.round(this.baseRadius * (z / 12)))
         );
         this.radius = scaled;
       });

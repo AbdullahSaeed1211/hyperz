@@ -17,6 +17,9 @@ importers:
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
+      leaflet-webgl-heatmap:
+        specifier: 0.2.7
+        version: 0.2.7
       leaflet.heat:
         specifier: ^0.2.0
         version: 0.2.0
@@ -2531,6 +2534,9 @@ packages:
 
   launch-editor@2.11.1:
     resolution: {integrity: sha512-SEET7oNfgSaB6Ym0jufAdCeo3meJVeCaaDyzRygy0xsp2BFKCprcfHljTq4QkzTLUxEKkFK6OK4811YM2oSrRg==}
+
+  leaflet-webgl-heatmap@0.2.7:
+    resolution: {integrity: sha512-PFntI52n5YiCkdn3fnisyWS0HgAQYRImPhD9Vn8ZY0XhVSjjJzJhXgci9WbLLD5xr77CbQrfak3bQSxa7WS5mQ==}
 
   leaflet.heat@0.2.0:
     resolution: {integrity: sha512-Cd5PbAA/rX3X3XKxfDoUGi9qp78FyhWYurFg3nsfhntcM/MCNK08pRkf4iEenO1KNqwVPKCmkyktjW3UD+h9bQ==}
@@ -6908,6 +6914,8 @@ snapshots:
     dependencies:
       picocolors: 1.1.1
       shell-quote: 1.8.3
+
+  leaflet-webgl-heatmap@0.2.7: {}
 
   leaflet.heat@0.2.0: {}
 
