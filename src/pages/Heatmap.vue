@@ -9,14 +9,20 @@
         <!-- LEFT: Controls -->
         <div>
           <!-- Layer Controls -->
-          <div class="mb-4">
-            <h4 class="text-sm font-medium text-gray-700 mb-2">Layers</h4>
+          <div class="mb-4" role="group" aria-labelledby="layers-heading">
+            <h4
+              id="layers-heading"
+              class="text-sm font-medium text-gray-700 mb-2"
+            >
+              Layers
+            </h4>
             <div class="flex gap-4">
               <label class="flex items-center gap-2 cursor-pointer group">
                 <input
                   type="checkbox"
                   v-model="showHeat"
                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  aria-label="Toggle heat layer"
                 />
                 <span
                   class="text-sm group-hover:text-blue-600 transition-colors"
@@ -37,6 +43,7 @@
                   type="checkbox"
                   v-model="showMarkers"
                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  aria-label="Toggle markers"
                 />
                 <span
                   class="text-sm group-hover:text-blue-600 transition-colors"
@@ -51,6 +58,52 @@
                     Individual order location pins
                   </div>
                 </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Render Mode -->
+          <div
+            class="mb-4"
+            role="radiogroup"
+            aria-labelledby="render-mode-heading"
+          >
+            <h4
+              id="render-mode-heading"
+              class="text-sm font-medium text-gray-700 mb-2"
+            >
+              Render mode
+            </h4>
+            <div class="flex flex-wrap gap-3">
+              <label class="inline-flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="renderMode"
+                  value="auto"
+                  v-model="renderMode"
+                  aria-label="Auto render mode"
+                />
+                <span class="text-sm">Auto</span>
+              </label>
+              <label class="inline-flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="renderMode"
+                  value="canvas"
+                  v-model="renderMode"
+                  aria-label="Canvas render mode"
+                />
+                <span class="text-sm">Canvas</span>
+              </label>
+              <label class="inline-flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="renderMode"
+                  value="webgl"
+                  v-model="renderMode"
+                  aria-label="WebGL render mode"
+                />
+                <span class="text-sm">WebGL</span>
               </label>
             </div>
           </div>
@@ -82,6 +135,7 @@
                   max="200"
                   v-model.number="radius"
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
+                  aria-label="Heat radius"
                 />
                 <div class="text-xs text-gray-500 text-center">
                   {{ radius }}px
@@ -109,6 +163,7 @@
                   max="40"
                   v-model.number="blur"
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
+                  aria-label="Heat blur"
                 />
                 <div class="text-xs text-gray-500 text-center">
                   {{ blur }}px
@@ -137,6 +192,7 @@
                   step="0.05"
                   v-model.number="weightScale"
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
+                  aria-label="Intensity"
                 />
                 <div class="text-xs text-gray-500 text-center">
                   {{ weightScale.toFixed(2) }}
@@ -228,24 +284,19 @@
       :zoom="12"
       :center="center"
       style="height: 100%; width: 100%"
+      @ready="onMapReady"
     >
       <l-tile-layer :url="tileUrl" :attribution="attribution" />
       <l-tile-layer :url="labelsUrl" :opacity="0.9" />
-      <!-- Canvas Heatmap (leaflet.heat) -->
-      <l-heatmap
-        v-if="showHeat && !useWebgl"
-        :lat-lngs="heatLatLngs"
+      <HeatLayer
+        v-if="showHeat"
+        :mode="renderMode"
+        :points="heatPoints"
         :radius="radius"
+        :intensity="clampedIntensity"
         :gradient="gradient"
-        :blur="blur"
-      />
-      <!-- WebGL Heatmap for large radii -->
-      <l-webgl-heatmap
-        v-if="showHeat && useWebgl"
-        :lat-lngs="heatLatLngs"
-        :radius="radius"
-        :gradient="gradient"
-        :intensity="weightScale"
+        @ready="() => {}"
+        @error="() => {}"
       />
       <template v-if="showMarkers">
         <l-marker
@@ -359,165 +410,19 @@
 <script>
 import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 import L from "leaflet";
-import "leaflet.heat";
-import "leaflet-webgl-heatmap";
+import HeatLayer from "@/components/map/HeatLayer.vue";
+import { scaleRadiusWithZoom } from "@/config/heatmap";
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
-// Lightweight wrapper to expose canvas heat layer as a component
-const LHeatmap = {
-  name: "LHeatmap",
-  props: {
-    latLngs: { type: Array, required: true },
-    radius: { type: Number, default: 25 },
-    blur: { type: Number, default: 20 },
-    minOpacity: { type: Number, default: 0.2 },
-    gradient: {
-      type: Object,
-      default: () => ({
-        0.0: "rgba(0,0,255,0.45)",
-        0.4: "#32CD32",
-        0.7: "#FFA500",
-        1.0: "#FF0000",
-      }),
-    },
-  },
-  data() {
-    return { attachTimer: null };
-  },
-  mounted() {
-    const layer = L.heatLayer(this.latLngs, {
-      radius: this.radius,
-      blur: Math.max(this.blur, Math.round(this.radius * 0.6)),
-      maxZoom: 17,
-      gradient: this.gradient,
-    });
-    this.layer = layer;
-    const attach = () => {
-      const map = this.$parent && this.$parent.mapObject;
-      if (map) {
-        map.addLayer(layer);
-        if (this.attachTimer) {
-          clearInterval(this.attachTimer);
-          this.attachTimer = null;
-        }
-      }
-    };
-    // Attempt to attach immediately and keep trying until the map exists
-    attach();
-    if (!this.layer._map) {
-      this.attachTimer = setInterval(attach, 30);
-    }
-  },
-  watch: {
-    latLngs(next) {
-      if (this.layer && this.layer._map) this.layer.setLatLngs(next);
-    },
-    radius(next) {
-      if (this.layer && this.layer._map) {
-        this.layer.setOptions({ radius: next });
-        this.layer.redraw();
-      }
-    },
-    blur(next) {
-      if (this.layer && this.layer._map) {
-        const effective = Math.max(next, Math.round(this.radius * 0.6));
-        this.layer.setOptions({ blur: effective });
-        this.layer.redraw();
-      }
-    },
-    minOpacity(next) {
-      if (this.layer && this.layer._map) {
-        this.layer.setOptions({ minOpacity: next });
-        this.layer.redraw();
-      }
-    },
-    gradient(next) {
-      if (this.layer && this.layer._map) {
-        this.layer.setOptions({ gradient: next });
-      }
-    },
-  },
-  beforeDestroy() {
-    if (this.attachTimer) {
-      clearInterval(this.attachTimer);
-      this.attachTimer = null;
-    }
-    if (
-      this.layer &&
-      this.layer._map &&
-      this.$parent &&
-      this.$parent.mapObject
-    ) {
-      this.$parent.mapObject.removeLayer(this.layer);
-    }
-  },
-  render(h) {
-    return h();
-  },
-};
-
-// WebGL heatmap wrapper using leaflet-webgl-heatmap
-const LWebglHeatmap = {
-  name: "LWebglHeatmap",
-  props: {
-    latLngs: { type: Array, required: true },
-    radius: { type: Number, default: 50 },
-    intensity: { type: Number, default: 1 },
-    gradient: { type: Object, default: () => ({}) },
-  },
-  mounted() {
-    const layer = (this.layer = L.webGLHeatmap({
-      size: this.radius,
-      alphaRange: 0.8,
-    }));
-    const map = this.$parent && this.$parent.mapObject;
-    if (map) {
-      map.addLayer(layer);
-      this._applyData();
-    }
-  },
-  watch: {
-    latLngs() {
-      this._applyData();
-    },
-    radius(next) {
-      if (this.layer) {
-        this.layer.setOptions({ size: next });
-      }
-    },
-    intensity() {
-      this._applyData();
-    },
-  },
-  methods: {
-    _applyData() {
-      if (!this.layer) return;
-      const points = this.latLngs.map((p) => ({
-        lat: p[0],
-        lon: p[1],
-        value: p[2] || this.intensity,
-      }));
-      this.layer.setData(points);
-      this.layer.update();
-    },
-  },
-  beforeDestroy() {
-    if (this.layer && this.$parent && this.$parent.mapObject) {
-      this.$parent.mapObject.removeLayer(this.layer);
-    }
-  },
-  render(h) {
-    return h();
-  },
-};
+// using abstract HeatLayer facade; the page doesn't know the backend
 
 import orderService from "@/services/orderService";
 
 export default {
   name: "HeatmapPage",
-  components: { LMap, LTileLayer, LMarker, LPopup, LHeatmap, LWebglHeatmap },
+  components: { LMap, LTileLayer, LMarker, LPopup, HeatLayer },
   data() {
     return {
       orders: [],
@@ -535,21 +440,28 @@ export default {
       baseRadius: 35,
       blur: 32,
       weightScale: 0.8,
+      renderMode: "auto", // auto | canvas | webgl
       gradient: {
         0.0: "#2563eb",
         0.35: "#22c55e",
         0.65: "#f59e0b",
         1.0: "#ef4444",
       },
+      mapReady: false,
+      mapInstance: null,
     };
   },
   computed: {
-    useWebgl() {
-      return this.radius >= 95;
+    clampedIntensity() {
+      return Math.min(1, Math.max(0, this.weightScale));
     },
     heatLatLngs() {
       const w = this.weightScale;
       return this.orders.map((o) => [...o.location_lat_lon, w]);
+    },
+    heatPoints() {
+      // Non-reactive buffer derivation kept minimal here
+      return this.heatLatLngs;
     },
 
     // Determine marker style based on tenant_id patterns
@@ -606,29 +518,31 @@ export default {
   async created() {
     L.Icon.Default.mergeOptions({ iconUrl, iconRetinaUrl, shadowUrl });
     this.orders = await orderService.getOrders();
-    this.$nextTick(this.fitToOrders);
-    this.$nextTick(this.setupZoomBinding);
   },
   methods: {
+    onMapReady() {
+      this.mapInstance = this.$refs.map && this.$refs.map.mapObject;
+      this.mapReady = !!this.mapInstance;
+      if (this.mapReady) {
+        this.fitToOrders();
+        this.setupZoomBinding();
+      }
+    },
     select(o) {
       this.$nextTick(() => {});
       return o;
     },
     fitToOrders() {
-      if (!this.orders.length || !this.$refs.map) return;
+      if (!this.orders.length || !this.mapReady || !this.mapInstance) return;
       const bounds = L.latLngBounds(this.orders.map((o) => o.location_lat_lon));
-      this.$refs.map.mapObject.fitBounds(bounds.pad(0.1));
+      this.mapInstance.fitBounds(bounds.pad(0.1));
     },
     setupZoomBinding() {
-      const map = this.$refs.map && this.$refs.map.mapObject;
-      if (!map) return;
+      const map = this.mapInstance;
+      if (!this.mapReady || !map) return;
       map.on("zoomend", () => {
         const z = map.getZoom();
-        // Scale the radius with zoom to keep heat visible when zooming out/in
-        const scaled = Math.max(
-          10,
-          Math.min(200, Math.round(this.baseRadius * (z / 12)))
-        );
+        const scaled = scaleRadiusWithZoom(this.baseRadius, z);
         this.radius = scaled;
       });
     },
