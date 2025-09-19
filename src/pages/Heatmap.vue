@@ -331,40 +331,13 @@ export default {
       });
     },
 
-    // Determine marker style based on tenant_id patterns
-    getMarkerStyle() {
-      return (order) => {
-        const tenantId = order.tenant_id;
-
-        // Premium tenants (higher numbers get special styling)
-        if (tenantId >= 1015) {
-          return "marker-premium";
-        }
-        // High-value tenants (medium range)
-        else if (tenantId >= 1010) {
-          return "marker-high-value";
-        }
-        // Regular tenants (default styling)
-        else {
-          return "marker-regular";
-        }
-      };
-    },
-
     // Get marker icon based on order type
     getMarkerIcon() {
       return (order) => {
         const tenantId = order.tenant_id;
 
         // Create custom icons for different marker types
-        if (tenantId >= 1015) {
-          return L.divIcon({
-            className: "marker-premium",
-            html: '<div style="width: 20px; height: 20px; background-color: #8b5cf6; border: 2px solid white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>',
-            iconSize: [20, 20],
-            iconAnchor: [10, 10],
-          });
-        } else if (tenantId >= 1010) {
+        if (tenantId >= 1010) {
           return L.divIcon({
             className: "marker-high-value",
             html: '<div style="width: 18px; height: 18px; background-color: #10b981; border: 2px solid white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>',
@@ -512,23 +485,6 @@ export default {
   background-color: #10b981;
   border: 2px solid white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.marker-premium {
-  background-color: #8b5cf6;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
 }
 
 /* Responsive adjustments */
