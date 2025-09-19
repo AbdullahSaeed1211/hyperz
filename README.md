@@ -41,6 +41,3 @@ Open the app at `http://localhost:3000`. Navigate to “Orders Heatmap” from t
 - “Blue zone” explanation: the gradient maps lower densities to blue. Areas at the fringe of clusters (or isolated points) naturally render as blue—indicating low activity relative to hotter (yellow/red) centers. As more nearby orders cluster, those regions transition through green/yellow toward red.
 - Tailwind classes provide responsive admin styling with a collapsible sidebar
 
-## Design Docs
-- Optional internal docs live under `docs/` (ignored in Git).
-# hyperz
