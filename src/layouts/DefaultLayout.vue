@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <div
       :class="[
-        'fixed z-[1000] app-sidebar top-0 left-0 w-64 h-full transform md:transform-none',
+        'fixed z-[3000] app-sidebar top-0 left-0 w-64 h-full transform md:transform-none',
         mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
         'transition-transform duration-150',
       ]"
@@ -12,7 +12,7 @@
         @toggle="sidebarCollapsed = !sidebarCollapsed"
       />
     </div>
-    <div class="relative flex flex-col md:ml-64">
+    <div class="relative z-0 flex flex-col md:ml-64">
       <Navbar :title="pageTitle" @toggle-mobile="mobileOpen = true" />
       <div class="px-6 bg-gray-50">
         <PageHeader :title="pageTitle" :range.sync="dateRange" />
@@ -24,7 +24,7 @@
     <!-- Overlay for mobile -->
     <div
       v-if="mobileOpen"
-      class="fixed inset-0 bg-black bg-opacity-50 md:hidden z-[950]"
+      class="fixed inset-0 bg-black bg-opacity-50 md:hidden z-[2950]"
       @click="mobileOpen = false"
     ></div>
   </div>

@@ -1,8 +1,8 @@
 <template>
-  <div class="h-[75vh] md:h-[78vh] lg:h-[80vh]">
+  <div class="relative h-[75vh] md:h-[78vh] lg:h-[80vh] z-0">
     <!-- Heatmap Controls -->
     <div
-      class="mb-4 bg-white rounded-lg shadow-sm border border-gray-200 p-4 heatmap-controls"
+      class="mb-4 bg-white rounded-lg shadow-sm border border-gray-200 p-4 heatmap-controls relative z-10"
     >
       <h3 class="text-lg font-semibold mb-3 text-gray-900">Map Controls</h3>
       <div class="md:grid md:grid-cols-2 md:gap-6">
