@@ -209,19 +209,12 @@
                 <span
                   class="inline-block px-2 py-1 text-xs rounded-full"
                   :class="{
-                    'bg-purple-100 text-purple-800': o.tenant_id >= 1015,
                     'bg-green-100 text-green-800':
                       o.tenant_id >= 1010 && o.tenant_id < 1015,
                     'bg-blue-100 text-blue-800': o.tenant_id < 1010,
                   }"
                 >
-                  {{
-                    o.tenant_id >= 1015
-                      ? "Premium"
-                      : o.tenant_id >= 1010
-                      ? "High-Value"
-                      : "Regular"
-                  }}
+                  {{ o.tenant_id >= 1010 ? "High-Value" : "Regular" }}
                 </span>
               </div>
               <div><strong>Order ID:</strong> {{ o.order_id }}</div>

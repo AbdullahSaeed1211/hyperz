@@ -87,8 +87,11 @@ export default {
   },
   beforeDestroy() {
     try {
-      if (this.layer && this.$parent && this.$parent.mapObject) {
-        this.$parent.mapObject.removeLayer(this.layer);
+      let p = this.$parent;
+      while (p && !p.mapObject) p = p.$parent;
+      const map = p && p.mapObject ? p.mapObject : null;
+      if (this.layer && map) {
+        map.removeLayer(this.layer);
       }
     } catch (e) {
       this.$emit("error", e);
