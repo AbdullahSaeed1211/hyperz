@@ -13,12 +13,10 @@
 
 <script>
 import CanvasHeatLayer from "@/components/map/CanvasHeatLayer";
-import WebglHeatLayer from "@/components/map/WebglHeatLayer";
-import { HEATMAP_DEFAULTS } from "@/config/heatmap";
 
 export default {
   name: "HeatLayer",
-  components: { CanvasHeatLayer, WebglHeatLayer },
+  components: { CanvasHeatLayer },
   props: {
     mode: { type: String, default: "auto" }, // auto | canvas | webgl
     points: { type: Array, required: true },
@@ -29,11 +27,8 @@ export default {
   },
   computed: {
     componentName() {
-      if (this.mode === "canvas") return "CanvasHeatLayer";
-      if (this.mode === "webgl") return "WebglHeatLayer";
-      return this.radius >= HEATMAP_DEFAULTS.webglSwitchRadius
-        ? "WebglHeatLayer"
-        : "CanvasHeatLayer";
+      // Consolidated: always use Canvas backend for compatibility and clarity
+      return "CanvasHeatLayer";
     },
   },
 };

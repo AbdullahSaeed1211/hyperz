@@ -62,86 +62,14 @@
             </div>
           </div>
 
-          <!-- Render Mode -->
-          <div
-            class="mb-4"
-            role="radiogroup"
-            aria-labelledby="render-mode-heading"
-          >
-            <h4
-              id="render-mode-heading"
-              class="text-sm font-medium text-gray-700 mb-2"
-            >
-              Render mode
-            </h4>
-            <div class="flex flex-wrap gap-3">
-              <label class="inline-flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="renderMode"
-                  value="auto"
-                  v-model="renderMode"
-                  aria-label="Auto render mode"
-                />
-                <span class="text-sm">Auto</span>
-              </label>
-              <label class="inline-flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="renderMode"
-                  value="canvas"
-                  v-model="renderMode"
-                  aria-label="Canvas render mode"
-                />
-                <span class="text-sm">Canvas</span>
-              </label>
-              <label class="inline-flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="renderMode"
-                  value="webgl"
-                  v-model="renderMode"
-                  aria-label="WebGL render mode"
-                />
-                <span class="text-sm">WebGL</span>
-              </label>
-            </div>
-          </div>
+          <!-- Render Mode removed: we always use Canvas for compatibility -->
 
           <!-- Heatmap Settings -->
           <div class="mb-4">
             <h4 class="text-sm font-medium text-gray-700 mb-3">
               Heatmap Settings
             </h4>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <!-- Radius Control -->
-              <div class="space-y-2">
-                <label
-                  class="flex items-center justify-between text-sm text-gray-600"
-                >
-                  <span class="flex items-center gap-1">Radius</span>
-                  <div class="tooltip-container relative">
-                    <span class="info-icon cursor-help">i</span>
-                    <div
-                      class="tooltip absolute bottom-full right-0 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 pointer-events-none transition-opacity duration-200 whitespace-nowrap z-10 max-w-xs"
-                    >
-                      Controls the size of heat zones around each order
-                    </div>
-                  </div>
-                </label>
-                <input
-                  type="range"
-                  min="10"
-                  max="200"
-                  v-model.number="radius"
-                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-blue"
-                  aria-label="Heat radius"
-                />
-                <div class="text-xs text-gray-500 text-center">
-                  {{ radius }}px
-                </div>
-              </div>
-
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Blur Control -->
               <div class="space-y-2">
                 <label
@@ -217,62 +145,21 @@
           </div>
         </div>
 
-        <!-- RIGHT: Legend -->
+        <!-- RIGHT: Legend (markers-only) -->
         <div class="mt-6 md:mt-0">
-          <h4 class="text-sm font-medium text-gray-800 mb-3">Heatmap Legend</h4>
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs text-gray-600 font-medium">Order Density</span>
-            <div class="flex items-center gap-2">
-              <span class="text-xs text-gray-500">Low</span>
-              <div class="flex">
-                <div
-                  class="w-3 h-6 bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 rounded-l"
-                ></div>
-                <div
-                  class="w-3 h-6 bg-gradient-to-r from-yellow-400 to-red-500 rounded-r"
-                ></div>
-              </div>
-              <span class="text-xs text-gray-500">High</span>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-2 gap-2 text-xs">
+          <h4 class="text-sm font-medium text-gray-800 mb-3">Legend</h4>
+          <div class="flex items-center gap-6 text-xs">
             <div class="flex items-center gap-1">
-              <div class="w-3 h-3 bg-blue-500 rounded"></div>
-              <span class="text-gray-600">Low Activity</span>
+              <div
+                class="w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-sm"
+              ></div>
+              <span class="text-gray-600">Order Location</span>
             </div>
             <div class="flex items-center gap-1">
-              <div class="w-3 h-3 bg-green-500 rounded"></div>
-              <span class="text-gray-600">Medium Activity</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <div class="w-3 h-3 bg-yellow-500 rounded"></div>
-              <span class="text-gray-600">High Activity</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <div class="w-3 h-3 bg-red-500 rounded"></div>
-              <span class="text-gray-600">Peak Activity</span>
-            </div>
-          </div>
-          <div class="mt-3 pt-3 border-t border-gray-100">
-            <div class="flex items-center gap-4 text-xs">
-              <div class="flex items-center gap-1">
-                <div
-                  class="w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-sm"
-                ></div>
-                <span class="text-gray-600">Order Location</span>
-              </div>
-              <div class="flex items-center gap-1">
-                <div
-                  class="w-4 h-4 bg-green-600 rounded-full border-2 border-white shadow-sm"
-                ></div>
-                <span class="text-gray-600">High-Value Order</span>
-              </div>
-              <div class="flex items-center gap-1">
-                <div
-                  class="w-4 h-4 bg-purple-600 rounded-full border-2 border-white shadow-sm"
-                ></div>
-                <span class="text-gray-600">Premium Order</span>
-              </div>
+              <div
+                class="w-4 h-4 bg-green-600 rounded-full border-2 border-white shadow-sm"
+              ></div>
+              <span class="text-gray-600">High-Value Order</span>
             </div>
           </div>
         </div>
@@ -288,9 +175,18 @@
     >
       <l-tile-layer :url="tileUrl" :attribution="attribution" />
       <l-tile-layer :url="labelsUrl" :opacity="0.9" />
+      <l-polygon
+        v-if="coverageLatLngs.length"
+        :lat-lngs="coverageLatLngs"
+        :color="'#2563eb'"
+        :weight="1"
+        :opacity="0.15"
+        :fill-color="'#2563eb'"
+        :fill-opacity="0.08"
+      />
       <HeatLayer
         v-if="showHeat"
-        :mode="renderMode"
+        :mode="'canvas'"
         :points="heatPoints"
         :radius="radius"
         :blur="blur"
@@ -339,80 +235,14 @@
         </l-marker>
       </template>
     </l-map>
-
-    <!-- Enhanced Legend -->
-    <div class="mt-4 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-      <h4 class="text-sm font-medium text-gray-800 mb-3">Heatmap Legend</h4>
-
-      <!-- Color Scale Legend -->
-      <div class="flex items-center justify-between mb-2">
-        <span class="text-xs text-gray-600 font-medium">Order Density</span>
-        <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-500">Low</span>
-          <div class="flex">
-            <div
-              class="w-3 h-6 bg-gradient-to-r from-blue-400 via-green-400 to-yellow-400 rounded-l"
-            ></div>
-            <div
-              class="w-3 h-6 bg-gradient-to-r from-yellow-400 to-red-500 rounded-r"
-            ></div>
-          </div>
-          <span class="text-xs text-gray-500">High</span>
-        </div>
-      </div>
-
-      <!-- Legend Details -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-        <div class="flex items-center gap-1">
-          <div class="w-3 h-3 bg-blue-500 rounded"></div>
-          <span class="text-gray-600">Low Activity</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <div class="w-3 h-3 bg-green-500 rounded"></div>
-          <span class="text-gray-600">Medium Activity</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <div class="w-3 h-3 bg-yellow-500 rounded"></div>
-          <span class="text-gray-600">High Activity</span>
-        </div>
-        <div class="flex items-center gap-1">
-          <div class="w-3 h-3 bg-red-500 rounded"></div>
-          <span class="text-gray-600">Peak Activity</span>
-        </div>
-      </div>
-
-      <!-- Marker Legend -->
-      <div class="mt-3 pt-3 border-t border-gray-100">
-        <div class="flex items-center gap-4 text-xs">
-          <div class="flex items-center gap-1">
-            <div
-              class="w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-sm"
-            ></div>
-            <span class="text-gray-600">Order Location</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <div
-              class="w-4 h-4 bg-green-600 rounded-full border-2 border-white shadow-sm"
-            ></div>
-            <span class="text-gray-600">High-Value Order</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <div
-              class="w-4 h-4 bg-purple-600 rounded-full border-2 border-white shadow-sm"
-            ></div>
-            <span class="text-gray-600">Premium Order</span>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
-import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
+import { LMap, LTileLayer, LMarker, LPopup, LPolygon } from "vue2-leaflet";
 import L from "leaflet";
 import HeatLayer from "@/components/map/HeatLayer.vue";
-import { scaleRadiusWithZoom } from "@/config/heatmap";
+// import { scaleRadiusWithZoom } from "@/config/heatmap";
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
@@ -423,7 +253,7 @@ import orderService from "@/services/orderService";
 
 export default {
   name: "HeatmapPage",
-  components: { LMap, LTileLayer, LMarker, LPopup, HeatLayer },
+  components: { LMap, LTileLayer, LMarker, LPopup, LPolygon, HeatLayer },
   data() {
     return {
       orders: [],
@@ -437,11 +267,10 @@ export default {
         '&copy; OpenStreetMap, &copy; <a href="https://carto.com/attributions">CARTO</a>',
       showHeat: true,
       showMarkers: true,
-      radius: 35,
-      baseRadius: 35,
-      blur: 32,
+      radius: 56, // fixed radius (higher for stronger zones)
+      baseRadius: 56,
+      blur: 52,
       weightScale: 0.8,
-      renderMode: "canvas", // default to Canvas for stability; user can switch
       gradient: {
         0.0: "#2563eb",
         0.35: "#22c55e",
@@ -463,6 +292,50 @@ export default {
     heatPoints() {
       // Non-reactive buffer derivation kept minimal here
       return this.heatLatLngs;
+    },
+
+    coverageLatLngs() {
+      if (!this.orders || this.orders.length < 3) return [];
+      const pts = this.orders.map((o) => ({
+        x: o.location_lat_lon[1],
+        y: o.location_lat_lon[0],
+      }));
+      pts.sort((a, b) => (a.x === b.x ? a.y - b.y : a.x - b.x));
+      const cross = (o, a, b) =>
+        (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+      const lower = [];
+      for (const p of pts) {
+        while (
+          lower.length >= 2 &&
+          cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0
+        )
+          lower.pop();
+        lower.push(p);
+      }
+      const upper = [];
+      for (let i = pts.length - 1; i >= 0; i--) {
+        const p = pts[i];
+        while (
+          upper.length >= 2 &&
+          cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0
+        )
+          upper.pop();
+        upper.push(p);
+      }
+      const hull = lower.slice(0, -1).concat(upper.slice(0, -1));
+      if (hull.length < 3) return [];
+      const centroid = hull.reduce(
+        (acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }),
+        { x: 0, y: 0 }
+      );
+      centroid.x /= hull.length;
+      centroid.y /= hull.length;
+      const expand = 1.06;
+      return hull.map((p) => {
+        const dx = p.x - centroid.x;
+        const dy = p.y - centroid.y;
+        return [centroid.y + dy * expand, centroid.x + dx * expand];
+      });
     },
 
     // Determine marker style based on tenant_id patterns
@@ -526,7 +399,6 @@ export default {
       this.mapReady = !!this.mapInstance;
       if (this.mapReady) {
         this.fitToOrders();
-        this.setupZoomBinding();
       }
     },
     select(o) {
@@ -538,15 +410,7 @@ export default {
       const bounds = L.latLngBounds(this.orders.map((o) => o.location_lat_lon));
       this.mapInstance.fitBounds(bounds.pad(0.1));
     },
-    setupZoomBinding() {
-      const map = this.mapInstance;
-      if (!this.mapReady || !map) return;
-      map.on("zoomend", () => {
-        const z = map.getZoom();
-        const scaled = scaleRadiusWithZoom(this.baseRadius, z);
-        this.radius = scaled;
-      });
-    },
+    setupZoomBinding() {},
   },
 };
 </script>
@@ -610,6 +474,12 @@ export default {
 .leaflet-heatmap-layer,
 .leaflet-marker-pane {
   transition: opacity 0.3s ease-in-out;
+}
+
+/* Canvas rendering quality tweaks */
+.leaflet-heatmap-layer canvas {
+  image-rendering: auto;
+  transform: translateZ(0);
 }
 
 /* Fade in animation for controls */

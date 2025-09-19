@@ -1,9 +1,9 @@
 export const HEATMAP_DEFAULTS = Object.freeze({
   minRadius: 10,
   maxRadius: 200,
-  webglSwitchRadius: 90,
+  webglSwitchRadius: 80,
   baseZoom: 12,
-  blurFactor: 0.6,
+  blurFactor: 0.9,
 });
 
 export const DEFAULT_GRADIENT = Object.freeze({

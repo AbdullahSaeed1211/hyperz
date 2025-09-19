@@ -17,19 +17,22 @@ export default {
       while (p && !p.mapObject) p = p.$parent;
       return p && p.mapObject ? p.mapObject : null;
     };
+    // High-DPI support
+    const map = findMap();
     const blur = Math.max(
       Math.round(
         Math.max(this.blur, this.radius * HEATMAP_DEFAULTS.blurFactor)
       ),
-      10
+      12
     );
     this.layer = L.heatLayer(this.points, {
       radius: this.radius,
       blur,
       gradient: this.gradient,
+      minOpacity: 0.15,
+      max: 1.0,
       maxZoom: 17,
     });
-    const map = findMap();
     if (map) {
       map.addLayer(this.layer);
       this.$emit("ready");
@@ -38,27 +41,43 @@ export default {
   methods: {
     update(points) {
       if (this.layer && this.layer._map) {
+        // Debounced redraw for smoother updates
         this.layer.setLatLngs(points || this.points);
-        this.layer.redraw();
+        if (this._redrawTimer) clearTimeout(this._redrawTimer);
+        this._redrawTimer = setTimeout(() => {
+          this.layer && this.layer.redraw();
+        }, 50);
       }
     },
   },
   watch: {
     points(next) {
-      if (this.layer && this.layer._map) this.layer.setLatLngs(next);
+      if (this.layer && this.layer._map) this.update(next);
     },
     radius(next) {
-      if (this.layer && this.layer._map)
-        this.layer.setOptions({ radius: next });
+      if (this.layer && this.layer._map) {
+        const b = Math.max(
+          Math.round(Math.max(this.blur, next * HEATMAP_DEFAULTS.blurFactor)),
+          12
+        );
+        this.layer.setOptions({ radius: next, blur: b });
+        if (this._redrawTimer) clearTimeout(this._redrawTimer);
+        this._redrawTimer = setTimeout(() => {
+          this.layer && this.layer.redraw();
+        }, 50);
+      }
     },
     blur(next) {
       if (this.layer && this.layer._map) {
         const b = Math.max(
           Math.round(Math.max(next, this.radius * HEATMAP_DEFAULTS.blurFactor)),
-          10
+          12
         );
         this.layer.setOptions({ blur: b });
-        this.layer.redraw();
+        if (this._redrawTimer) clearTimeout(this._redrawTimer);
+        this._redrawTimer = setTimeout(() => {
+          this.layer && this.layer.redraw();
+        }, 50);
       }
     },
     gradient(next) {
